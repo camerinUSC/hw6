@@ -92,8 +92,55 @@ std::set<std::string> boggle(const std::set<std::string>& dict, const std::set<s
 }
 
 bool boggleHelper(const std::set<std::string>& dict, const std::set<std::string>& prefix, const std::vector<std::vector<char> >& board, 
-								   std::string word, std::set<std::string>& result, unsigned int r, unsigned int c, int dr, int dc)
+								   std::string word, std::set<std::string>& result, unsigned int row, unsigned int col, int dr, int dc)
 {
 //add your solution here!
+
+// checking bounds
+if (row >= board.size() || col >= board.size()){
+	return false;
+}
+
+char currentIndex = board[row][col];
+
+word = word + currentIndex;
+
+
+//not found
+if((prefix.find(word) == prefix.end()) && (dict.find(word) == dict.end())){
+	return false;
+}
+
+
+
+bool validWord = dict.find(word) != dict.end();
+bool keepBoggling = false;
+
+std::string longest;
+if(dict.find(word)!=dict.end()){
+	longest = word;
+}
+else{
+	longest = "";
+}
+
+
+unsigned int nextR = row + dr;
+unsigned int nextC = col + dc;
+
+//backtrack recursion
+
+if(nextC < board[0].size() && nextR < board.size()){
+	keepBoggling = boggleHelper(dict, prefix, board, word, result, nextR, nextC, dr, dc);
+
+}
+
+//adding to set if is the longest
+if(!keepBoggling && !longest.empty()){
+	result.insert(longest);
+}
+
+return (validWord || keepBoggling);
+
 
 }
